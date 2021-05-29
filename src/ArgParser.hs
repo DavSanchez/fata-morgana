@@ -1,6 +1,5 @@
-module ArgParser (Fata (Fata), fata) where
+module ArgParser (Fata (..), fata) where
 
-import Data.Semigroup ((<>))
 import Options.Applicative
   ( Parser,
     execParser,
@@ -20,7 +19,7 @@ import Options.Applicative
 
 data Fata = Fata
   { url :: String,
-    image :: String,
+    img :: String,
     tag :: String
   }
 

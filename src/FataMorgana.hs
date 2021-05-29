@@ -3,8 +3,7 @@
 
 module FataMorgana (fataMorgana) where
 
-import ArgParser (Fata (Fata), fata)
-import Data.Semigroup ((<>))
+import ArgParser (Fata (..), fata)
 import Data.Yaml (FromJSON, ParseException, decodeFileEither)
 import GHC.Generics (Generic)
 import System.Process (callCommand)
@@ -25,15 +24,15 @@ fataMorgana = do
     Left _ -> error "Could not read config.yaml file"
 
 mirrorImage :: Config -> Fata -> IO ()
-mirrorImage c (Fata u img t) = do
+mirrorImage c f = do
   callCommand $ "docker pull " <> oldUrl
   callCommand $ "docker tag " <> oldUrl <> " " <> newUrl
   callCommand $ "docker push " <> newUrl
   where
-    url = buildUrlSegment u
-    tag = buildTagSegment t
-    oldUrl = url <> img <> tag
-    newUrl = harbor_url c <> "/" <> img <> tag
+    urlSegment = buildUrlSegment $ url f
+    tagSegment = buildTagSegment $ tag f
+    oldUrl = urlSegment <> img f <> tagSegment
+    newUrl = harbor_url c <> "/" <> img f <> tagSegment
 
 buildUrlSegment :: String -> String
 buildUrlSegment "" = ""
