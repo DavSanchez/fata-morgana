@@ -6,8 +6,7 @@ module FataMorgana (fataMorgana) where
 import FataMorgana.ArgParser (Fata (..), fata)
 import FataMorgana.Internal
 import Data.Foldable (traverse_)
-import Data.Yaml (FromJSON, decodeFileEither)
-import GHC.Generics (Generic)
+import Data.Yaml (decodeFileEither)
 import System.Process (callCommand)
 
 fataMorgana :: IO ()
