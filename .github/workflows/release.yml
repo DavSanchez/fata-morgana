@@ -76,14 +76,15 @@ jobs:
           mkdir dist
           cabal install exe:fata-morgana --install-method=copy --overwrite-policy=always --installdir=dist
 
-      - if: matrix.os == 'windows-latest'
-        name: Set extension to .exe on Windows
-        run: |
-          echo "EXT=.exe" >> $env:GITHUB_ENV
-
       - name: Set binary path name
         run: |
-          echo "BINARY_PATH=./dist/fata-morgana${{ env.EXT }}" >> $env:GITHUB_ENV
+          echo "BINARY_PATH=./dist/fata-morgana${{ env.EXT }}" >> GITHUB_ENV
+
+      - if: matrix.os == 'windows-latest'
+        name: Set binary path name and extension on Windows
+        run: |
+          echo "EXT=.exe" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "BINARY_PATH=./dist/fata-morgana${{ env.EXT }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Compress binary
         uses: svenstaro/upx-action@2.0.1
