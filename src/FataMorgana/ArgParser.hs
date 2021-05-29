@@ -1,4 +1,4 @@
-module ArgParser (Fata (..), fata) where
+module FataMorgana.ArgParser (Fata (..), fata) where
 
 import Options.Applicative
   ( Parser,

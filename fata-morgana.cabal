@@ -49,7 +49,8 @@ library
     exposed-modules:  FataMorgana
 
     -- Modules included in this library but not exported.
-    other-modules: ArgParser
+    other-modules: FataMorgana.ArgParser
+                 , FataMorgana.Internal
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -95,10 +96,20 @@ test-suite fata-morgana-test
     type:             exitcode-stdio-1.0
 
     -- Directories containing source files.
-    hs-source-dirs:   test
+    hs-source-dirs:   src, test
 
     -- The entrypoint to the test suite.
     main-is:          FataMorganaTest.hs
 
+    -- Modules included in this library but not exported.
+    other-modules: FataMorgana.ArgParser
+                 , FataMorgana.Internal
+
     -- Test dependencies.
     build-depends:    base ^>=4.14.1.0
+                    , fata-morgana
+                    , optparse-applicative
+                    , process
+                    , yaml
+                    , hspec
+                    , QuickCheck
