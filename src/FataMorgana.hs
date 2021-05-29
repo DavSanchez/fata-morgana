@@ -1,16 +1,44 @@
-module FataMorgana (fata) where
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-import Options.Applicative
+module FataMorgana (fataMorgana) where
+
+import ArgParser (Fata (Fata), fata)
 import Data.Semigroup ((<>))
+import Data.Yaml (FromJSON, ParseException, decodeFileEither)
+import GHC.Generics (Generic)
+import System.Process (callCommand)
 
-data Fata = Fata {
-  url :: String,
-  image :: String,
-  tag :: String
-}
+newtype Config = Config
+  { harbor_url :: String
+  }
+  deriving (Generic)
 
-fataArgs :: Parser Fata
-fataArgs = undefined 
+instance FromJSON Config
 
-fata :: IO ()
-fata = putStrLn "someFunc"
+fataMorgana :: IO ()
+fataMorgana = do
+  args <- fata
+  conf <- decodeFileEither "./harbor.yaml"
+  case conf of
+    Right c -> mirrorImage c args
+    Left _ -> error "Could not read config.yaml file"
+
+mirrorImage :: Config -> Fata -> IO ()
+mirrorImage c (Fata u img t) = do
+  callCommand $ "docker pull " <> oldUrl
+  callCommand $ "docker tag " <> oldUrl <> " " <> newUrl
+  callCommand $ "docker push " <> newUrl
+  where
+    url = buildUrlSegment u
+    tag = buildTagSegment t
+    oldUrl = url <> img <> tag
+    newUrl = harbor_url c <> "/" <> img <> tag
+
+buildUrlSegment :: String -> String
+buildUrlSegment "" = ""
+buildUrlSegment u = u <> "/"
+
+buildTagSegment :: String -> String
+buildTagSegment "" = ""
+buildTagSegment t = ":" <> t

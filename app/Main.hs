@@ -1,8 +1,6 @@
 module Main where
 
-import FataMorgana (fata)
+import FataMorgana (fataMorgana)
 
 main :: IO ()
-main = do
-  putStrLn "Hello, Haskell!"
-  fata
+main = fataMorgana
