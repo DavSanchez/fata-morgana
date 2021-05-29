@@ -21,7 +21,7 @@ fataMorgana = do
   conf <- decodeFileEither "./mirror-config.yaml"
   case conf of
     Right c -> mirrorImage c args
-    Left _ -> error "Could not read config.yaml file"
+    Left _ -> error "Could not read mirror-config.yaml file"
 
 mirrorImage :: Config -> Fata -> IO ()
 mirrorImage c f = do
