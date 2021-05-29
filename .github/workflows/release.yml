@@ -83,7 +83,7 @@ jobs:
         run: echo "::set-env name=BINARY_PATH::./dist/fata-morgana${{ env.EXT }}"
 
       - name: Compress binary
-        uses: svenstaro/upx-action@2
+        uses: svenstaro/upx-action@v2
         with:
           file: ${{ env.BINARY_PATH }}
 
