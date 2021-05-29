@@ -9,7 +9,7 @@ import GHC.Generics (Generic)
 import System.Process (callCommand)
 
 newtype Config = Config
-  { harbor_url :: String
+  { registry_url :: String
   }
   deriving (Generic)
 
@@ -18,7 +18,7 @@ instance FromJSON Config
 fataMorgana :: IO ()
 fataMorgana = do
   args <- fata
-  conf <- decodeFileEither "./harbor.yaml"
+  conf <- decodeFileEither "./mirror-config.yaml"
   case conf of
     Right c -> mirrorImage c args
     Left _ -> error "Could not read config.yaml file"
@@ -32,7 +32,7 @@ mirrorImage c f = do
     urlSegment = buildUrlSegment $ url f
     tagSegment = buildTagSegment $ tag f
     oldUrl = urlSegment <> img f <> tagSegment
-    newUrl = harbor_url c <> "/" <> img f <> tagSegment
+    newUrl = registry_url c <> "/" <> img f <> tagSegment
 
 buildUrlSegment :: String -> String
 buildUrlSegment "" = ""
