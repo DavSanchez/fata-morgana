@@ -4,7 +4,7 @@
 module FataMorgana (fataMorgana) where
 
 import ArgParser (Fata (..), fata)
-import Data.Yaml (FromJSON, ParseException, decodeFileEither)
+import Data.Yaml (FromJSON, decodeFileEither)
 import GHC.Generics (Generic)
 import System.Process (callCommand)
 
