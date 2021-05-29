@@ -1,32 +1,36 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns #-}
 
 module FataMorgana.Internal where
 
-import FataMorgana.ArgParser
 import Data.Yaml (FromJSON)
+import FataMorgana.ArgParser (Fata (img, tag, url), ImageName, Tag, URL)
 import GHC.Generics (Generic)
 
+type Command = String
+
 newtype Config = Config
-  { registry_url :: String
+  { registry_url :: URL
   }
   deriving (Generic)
 
 instance FromJSON Config
 
-commandList :: Config -> Fata -> [String]
+commandList :: Config -> Fata -> [Command]
 commandList c f = [dockerPull, dockerTag, dockerPush]
   where
     dockerPull = "docker pull " <> oldUrl
     dockerTag = "docker tag " <> oldUrl <> " " <> newUrl
     dockerPush = "docker push " <> newUrl
-    oldUrl = baseUrlSegment (url f) <> img f <> tagSegment (tag f)
-    newUrl = registry_url c <> "/" <> img f <> tagSegment (tag f)
+    oldUrl = baseUrlSegment (url f) <> imageTagSegment (img f) (tag f)
+    newUrl = baseUrlSegment (registry_url c) <> imageTagSegment (img f) (tag f)
 
-baseUrlSegment :: String -> String
-baseUrlSegment "" = ""
+baseUrlSegment :: URL -> URL
+baseUrlSegment [] = []
+baseUrlSegment u@(last -> '/') = u
 baseUrlSegment u = u <> "/"
 
-tagSegment :: String -> String
-tagSegment "" = ""
-tagSegment t = ":" <> t
+imageTagSegment :: ImageName -> Tag -> ImageName
+imageTagSegment i [] = i
+imageTagSegment i t = i <> ":" <> t

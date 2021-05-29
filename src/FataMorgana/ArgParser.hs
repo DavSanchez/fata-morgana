@@ -1,4 +1,4 @@
-module FataMorgana.ArgParser (Fata (..), fata) where
+module FataMorgana.ArgParser (Fata(..), URL, ImageName, Tag, fata) where
 
 import Options.Applicative
   ( Parser,
@@ -17,10 +17,16 @@ import Options.Applicative
     (<**>),
   )
 
+type URL = String
+
+type ImageName = String
+
+type Tag = String
+
 data Fata = Fata
-  { url :: String,
-    img :: String,
-    tag :: String
+  { url :: URL,
+    img :: ImageName,
+    tag :: Tag
   }
 
 fataArgs :: Parser Fata
