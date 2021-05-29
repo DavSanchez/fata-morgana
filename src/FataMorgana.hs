@@ -4,6 +4,7 @@
 module FataMorgana (fataMorgana) where
 
 import ArgParser (Fata (..), fata)
+import Data.Foldable (traverse_)
 import Data.Yaml (FromJSON, decodeFileEither)
 import GHC.Generics (Generic)
 import System.Process (callCommand)
@@ -19,25 +20,27 @@ fataMorgana :: IO ()
 fataMorgana = do
   args <- fata
   conf <- decodeFileEither "./mirror-config.yaml"
-  case conf of
-    Right c -> mirrorImage c args
-    Left _ -> error "Could not read mirror-config.yaml file"
+  either
+    (errorWithoutStackTrace "Error: could not read or parse mirror-config.yaml file.")
+    (`mirrorImage` args)
+    conf
 
 mirrorImage :: Config -> Fata -> IO ()
-mirrorImage c f = do
-  callCommand $ "docker pull " <> oldUrl
-  callCommand $ "docker tag " <> oldUrl <> " " <> newUrl
-  callCommand $ "docker push " <> newUrl
+mirrorImage c f = traverse_ callCommand $ commandList c f
+
+commandList :: Config -> Fata -> [String]
+commandList c f = [dockerPull, dockerTag, dockerPush]
   where
-    urlSegment = buildUrlSegment $ url f
-    tagSegment = buildTagSegment $ tag f
-    oldUrl = urlSegment <> img f <> tagSegment
-    newUrl = registry_url c <> "/" <> img f <> tagSegment
+    dockerPull = "docker pull " <> oldUrl
+    dockerTag = "docker tag " <> oldUrl <> " " <> newUrl
+    dockerPush = "docker push " <> newUrl
+    oldUrl = baseUrlSegment (url f) <> img f <> tagSegment (tag f)
+    newUrl = registry_url c <> "/" <> img f <> tagSegment (tag f)
 
-buildUrlSegment :: String -> String
-buildUrlSegment "" = ""
-buildUrlSegment u = u <> "/"
+baseUrlSegment :: String -> String
+baseUrlSegment "" = ""
+baseUrlSegment u = u <> "/"
 
-buildTagSegment :: String -> String
-buildTagSegment "" = ""
-buildTagSegment t = ":" <> t
+tagSegment :: String -> String
+tagSegment "" = ""
+tagSegment t = ":" <> t
