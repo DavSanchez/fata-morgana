@@ -1,5 +1,10 @@
 # Revision history for fata-morgana
 
+
+## 0.3.0.1 -- 2021-05-31
+
+* Update help documentation.
+
 ## 0.3.0.0 -- 2021-05-30
 
 * Refactored project structure.
