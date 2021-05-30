@@ -1,7 +1,4 @@
-module FataMorgana.Mirager (Mirage(..), URL, ImageName, Tag, mirage) where
-
-import Data.List.NonEmpty ( NonEmpty, toList)
-import Data.String (IsString, fromString)
+module FataMorgana.Mirager (Mirage (..), URL, ImageName, Tag, mirage) where
 
 import Options.Applicative
   ( Parser,

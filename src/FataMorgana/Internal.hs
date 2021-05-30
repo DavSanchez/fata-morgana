@@ -5,7 +5,6 @@
 module FataMorgana.Internal where
 
 import Data.Char (isSpace)
-import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Yaml (FromJSON)
 import FataMorgana.Mirager (ImageName, Mirage (img, tag, url), Tag, URL)
 import GHC.Generics (Generic)
