@@ -37,20 +37,20 @@ mirageArgs =
           <> short 'u'
           <> metavar "BASE_URL"
           <> value ""
-          <> help "Base URL for getting the image. Leave it blank to use default."
+          <> help "Base URL for getting the image. When unset it uses Docker default behavior."
       )
     <*> strOption
       ( long "image"
           <> short 'i'
           <> metavar "IMAGE"
-          <> help "Image name."
+          <> help "Image name. Required."
       )
     <*> strOption
       ( long "tag"
           <> short 't'
           <> metavar "TAG"
           <> value ""
-          <> help "Tag. You can leave this blank."
+          <> help "Tag. When unset it uses Docker default behavior."
       )
 
 mirage :: IO Mirage
@@ -59,6 +59,6 @@ mirage =
     info
       (mirageArgs <**> helper)
       ( fullDesc
-          <> progDesc "Mirror IMAGE[:TAG] from BASE_URL to a pre-defined registry"
-          <> header "Fata Morgana - Mirror images between container registries"
+          <> progDesc "Mirrors IMAGE[:TAG] from BASE_URL (or the Docker default) to a pre-defined registry."
+          <> header "Fata Morgana - Mirror images between container registries."
       )
