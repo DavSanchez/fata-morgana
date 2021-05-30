@@ -10,7 +10,7 @@
 
 ### TODO
 
-Handle URLs better (protect against empty values where illegal, etc.)
+* Handle URLs better (protect against empty values where illegal, etc.)
 
 ## 0.2.0.1 -- 2021-05-29
 
