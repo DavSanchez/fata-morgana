@@ -8,7 +8,7 @@
 >
 > *— A certaing magical effect description from a certain roleplaying game.*
 
-This is just a little toy project to address some FDP chores. This pulls image from some container registry and pushes it to our most recent (cloud) Harbor instance.
+This is just a little toy project to address some FDP chores. An accomplished *Mirager*, Fata Morgana conjures an image from some container registry and materializes it in the heights of Cloud instances.
 
 ##  Usage
 

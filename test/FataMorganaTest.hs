@@ -1,54 +1,101 @@
 module Main (main) where
 
 import Control.Exception (evaluate)
-import FataMorgana.ArgParser
 import FataMorgana.Internal
+  ( Command,
+    Config (..),
+    baseUrlSegment,
+    commandList,
+    imageTagSegment,
+  )
+import FataMorgana.Mirager (Mirage (Mirage), URL)
 import Test.Hspec
-import Test.QuickCheck
-
-testConfig :: String
-testConfig = "registry.example.com/project"
-
-testFata :: Fata
-testFata =
-  Fata
-    { url = "",
-      img = "example-image",
-      tag = ""
-    }
+  ( anyException,
+    describe,
+    hspec,
+    it,
+    shouldBe,
+    shouldThrow,
+  )
 
 main :: IO ()
 main = hspec $ do
   describe "URL segment" $ do
-    it "Should create a segment appending '/'" $ do
+    it "should create a segment appending '/' when necessary" $ do
       baseUrlSegment "" `shouldBe` ""
+      baseUrlSegment "/" `shouldBe` ""
+      baseUrlSegment (registry_url testConfig) `shouldBe` testConfigWithSlash
+      baseUrlSegment testConfigWithSlash `shouldBe` testConfigWithSlash
 
-    it "returns the first element of an *arbitrary* list" $
-      property $ \x xs -> head (x : xs) == (x :: Int)
+  describe "Image and tag pair" $ do
+    it "should create a legal image[:tag] pair" $ do
+      imageTagSegment "example-image" "" `shouldBe` "example-image"
+      imageTagSegment "example-image" " " `shouldBe` "example-image"
+      imageTagSegment "example-image" "v0.1.0" `shouldBe` "example-image:v0.1.0"
 
-    it "throws an exception if used with an empty list" $ do
-      evaluate (head []) `shouldThrow` anyException
+    it "should throw error if the image name is empty" $ do
+      evaluate (imageTagSegment "" "") `shouldThrow` anyException
+      evaluate (imageTagSegment " " "") `shouldThrow` anyException
 
--- main :: IO ()
--- main = putStrLn "Test suite not yet implemented."
-{-
-mirrorImage :: Config -> Fata -> IO ()
-mirrorImage c f = traverse_ callCommand $ commandList c f
+  describe "The command list" $ do
+    it "should represent the configuration passed" $ do
+      commandList testConfig testMirageBase `shouldBe` expectedCommandListBase
+      commandList testConfig testMirageTag `shouldBe` expectedCommandListTag
+      commandList testConfig testMirageURL `shouldBe` expectedCommandListWithOrigin
+      commandList testConfig testMirageUrlTag `shouldBe` expectedCommandListWithOriginTag
+      commandList testConfig testMirageUrlTagSlash `shouldBe` expectedCommandListWithOriginTag
 
-commandList :: Config -> Fata -> [String]
-commandList c f = [dockerPull, dockerTag, dockerPush]
-  where
-    dockerPull = "docker pull " <> oldUrl
-    dockerTag = "docker tag " <> oldUrl <> " " <> newUrl
-    dockerPush = "docker push " <> newUrl
-    oldUrl = baseUrlSegment (url f) <> img f <> tagSegment (tag f)
-    newUrl = registry_url c <> "/" <> img f <> tagSegment (tag f)
+testConfig :: Config
+testConfig = Config "registry.destination.com/project"
 
-baseUrlSegment :: String -> String
-baseUrlSegment "" = ""
-baseUrlSegment u = u <> "/"
+testConfigWithSlash :: URL
+testConfigWithSlash = registry_url testConfig <> "/"
 
-tagSegment :: String -> String
-tagSegment "" = ""
-tagSegment t = ":" <> t
--}
+testOriginRegistry :: URL
+testOriginRegistry = "registry.origin.com/project"
+
+testOriginRegistryWithSlash :: URL
+testOriginRegistryWithSlash = "registry.origin.com/project/"
+
+testMirageBase :: Mirage
+testMirageBase = Mirage "" "example-image" ""
+
+testMirageURL :: Mirage
+testMirageURL = Mirage testOriginRegistry "example-image" ""
+
+testMirageTag :: Mirage
+testMirageTag = Mirage "" "example-image" "tag"
+
+testMirageUrlTag :: Mirage
+testMirageUrlTag = Mirage testOriginRegistryWithSlash "example-image/" "tag"
+
+testMirageUrlTagSlash :: Mirage
+testMirageUrlTagSlash = Mirage testOriginRegistryWithSlash "example-image" "tag/"
+
+expectedCommandListBase :: [Command]
+expectedCommandListBase =
+  [ "docker pull " <> "example-image",
+    "docker tag " <> "example-image " <> testConfigWithSlash <> "example-image",
+    "docker push " <> testConfigWithSlash <> "example-image"
+  ]
+
+expectedCommandListTag :: [Command]
+expectedCommandListTag =
+  [ "docker pull " <> "example-image:tag",
+    "docker tag " <> "example-image:tag " <> testConfigWithSlash <> "example-image:tag",
+    "docker push " <> testConfigWithSlash <> "example-image:tag"
+  ]
+
+expectedCommandListWithOrigin :: [Command]
+expectedCommandListWithOrigin =
+  [ "docker pull " <> testOriginRegistryWithSlash <> "example-image",
+    "docker tag " <> testOriginRegistryWithSlash <> "example-image" <> " " <> testConfigWithSlash <> "example-image",
+    "docker push " <> testConfigWithSlash <> "example-image"
+  ]
+
+expectedCommandListWithOriginTag :: [Command]
+expectedCommandListWithOriginTag =
+  [ "docker pull " <> testOriginRegistryWithSlash <> "example-image:tag",
+    "docker tag " <> testOriginRegistryWithSlash <> "example-image:tag" <> " " <> testConfigWithSlash <> "example-image:tag",
+    "docker push " <> testConfigWithSlash <> "example-image:tag"
+  ]

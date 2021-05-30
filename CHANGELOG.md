@@ -1,9 +1,16 @@
 # Revision history for fata-morgana
 
-## 0.2.0.2 -- 2021-05-29
+## 0.3.0.0 -- 2021-05-30
 
 * Refactored project structure.
-* Implemented unit tests.
+* Protected against:
+  * Empty image names (program errors and quits.)
+  * Trailing slashes in image and tag names (stripped.)
+* Implementing unit tests.
+
+### TODO
+
+Handle URLs better (protect against empty values where illegal, etc.)
 
 ## 0.2.0.1 -- 2021-05-29
 

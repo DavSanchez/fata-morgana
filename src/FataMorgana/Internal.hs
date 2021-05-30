@@ -4,8 +4,10 @@
 
 module FataMorgana.Internal where
 
+import Data.Char (isSpace)
+import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Yaml (FromJSON)
-import FataMorgana.ArgParser (Fata (img, tag, url), ImageName, Tag, URL)
+import FataMorgana.Mirager (ImageName, Mirage (img, tag, url), Tag, URL)
 import GHC.Generics (Generic)
 
 type Command = String
@@ -17,7 +19,7 @@ newtype Config = Config
 
 instance FromJSON Config
 
-commandList :: Config -> Fata -> [Command]
+commandList :: Config -> Mirage -> [Command]
 commandList c f = [dockerPull, dockerTag, dockerPush]
   where
     dockerPull = "docker pull " <> oldUrl
@@ -28,9 +30,23 @@ commandList c f = [dockerPull, dockerTag, dockerPush]
 
 baseUrlSegment :: URL -> URL
 baseUrlSegment [] = []
+baseUrlSegment "/" = []
 baseUrlSegment u@(last -> '/') = u
 baseUrlSegment u = u <> "/"
 
 imageTagSegment :: ImageName -> Tag -> ImageName
-imageTagSegment i [] = i
-imageTagSegment i t = i <> ":" <> t
+imageTagSegment [] _ = error "Image name cannot be empty."
+imageTagSegment (processField -> []) _ = imageTagSegment [] []
+imageTagSegment i (processField -> []) = processField i
+imageTagSegment i t = mconcat $ processField <$> [i, ":", t]
+
+processField :: String -> String
+processField = removeTrailingSlash . filterOutSpace
+
+filterOutSpace :: String -> String
+filterOutSpace = filter (not . isSpace)
+
+removeTrailingSlash :: String -> String
+removeTrailingSlash [] = []
+removeTrailingSlash x@(last -> '/') = init x
+removeTrailingSlash x = x

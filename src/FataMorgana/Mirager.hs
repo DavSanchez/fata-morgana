@@ -1,4 +1,7 @@
-module FataMorgana.ArgParser (Fata(..), URL, ImageName, Tag, fata) where
+module FataMorgana.Mirager (Mirage(..), URL, ImageName, Tag, mirage) where
+
+import Data.List.NonEmpty ( NonEmpty, toList)
+import Data.String (IsString, fromString)
 
 import Options.Applicative
   ( Parser,
@@ -23,15 +26,15 @@ type ImageName = String
 
 type Tag = String
 
-data Fata = Fata
+data Mirage = Mirage
   { url :: URL,
     img :: ImageName,
     tag :: Tag
   }
 
-fataArgs :: Parser Fata
-fataArgs =
-  Fata
+mirageArgs :: Parser Mirage
+mirageArgs =
+  Mirage
     <$> strOption
       ( long "url"
           <> short 'u'
@@ -53,11 +56,11 @@ fataArgs =
           <> help "Tag. You can leave this blank."
       )
 
-fata :: IO Fata
-fata =
+mirage :: IO Mirage
+mirage =
   execParser $
     info
-      (fataArgs <**> helper)
+      (mirageArgs <**> helper)
       ( fullDesc
           <> progDesc "Mirror IMAGE[:TAG] from BASE_URL to a pre-defined registry"
           <> header "Fata Morgana - Mirror images between container registries"

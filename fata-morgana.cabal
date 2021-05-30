@@ -14,7 +14,7 @@ name:               fata-morgana
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:            0.2.0.1
+version:            0.3.0.0
 
 -- A short (one-line) description of the package.
 synopsis:           Mirror images between Harbor instances
@@ -49,7 +49,7 @@ library
     exposed-modules:  FataMorgana
 
     -- Modules included in this library but not exported.
-    other-modules: FataMorgana.ArgParser
+    other-modules: FataMorgana.Mirager
                  , FataMorgana.Internal
 
     -- LANGUAGE extensions used by modules in this package.
@@ -102,7 +102,7 @@ test-suite fata-morgana-test
     main-is:          FataMorganaTest.hs
 
     -- Modules included in this library but not exported.
-    other-modules: FataMorgana.ArgParser
+    other-modules: FataMorgana.Mirager
                  , FataMorgana.Internal
 
     -- Test dependencies.
@@ -112,4 +112,4 @@ test-suite fata-morgana-test
                     , process
                     , yaml
                     , hspec
-                    , QuickCheck
+                    -- , QuickCheck
