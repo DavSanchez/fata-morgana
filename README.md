@@ -1,6 +1,6 @@
 #  Fata Morgana
 
-[![Language: Haskell](https://img.shields.io/badge/Language-Haskell-blueviolet)](https://img.shields.io/badge/Language-Haskell-blueviolet) [![CI](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml/badge.svg)](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml)
+[![CI](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml/badge.svg)](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml) [![Language](https://img.shields.io/badge/Language-Haskell-blueviolet)](https://img.shields.io/badge/Language-Haskell-blueviolet) [![GHC](https://img.shields.io/badge/GHC-8.10.4-informational)](https://img.shields.io/badge/GHC-8.10.4-informational) 
 
 Original repo (and binaries) are available at [GitHub](https://github.com/DavSanchez/fata-morgana).
 
