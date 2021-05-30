@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml/badge.svg)](https://github.com/DavSanchez/fata-morgana/actions/workflows/ci.yml)
 
+Original repo (and binaries) are available at [GitHub](https://github.com/DavSanchez/fata-morgana).
+
 > ##  Mirror Image
 >
 > This spell grabs 1-4 duplicates of the caster from near-identical timelines to confuse foes [...]. Since all of the mirror images are the caster, in the same situation and fighting the same battle in their own timeline, they are indistinguishable in every way from the caster and mimic his every motion...
